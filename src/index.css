@@ -1,0 +1,56 @@
+.game-board {
+  width: 320px;
+  height: 320px;
+  border-collapse: collapse;
+}
+
+.circle {
+  width: 64px;
+  height: 64px;
+  shape-outside: circle();
+  clip-path: circle();
+}
+
+.square {
+  width: 75px;
+  height: 75px;
+  background: #fff;
+  border: 1px solid #999;
+}
+
+.rectangle {
+  width: 64px;
+  height: 64px;
+}
+
+.rectanglehor {
+  width: 64px;
+  height: 64px;
+}
+
+.rectanglever {
+  margin: auto;
+  width: 64px;
+  height: 64px;
+}
+
+.blue {
+  background: blue;
+}
+
+.green {
+  background: green;
+}
+
+.orange {
+  background: orange;
+}
+
+.red { 
+  background: red;
+}
+
+.yellow {
+  background: yellow;
+}
+
