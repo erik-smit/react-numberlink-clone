@@ -10,43 +10,90 @@ class Board extends React.Component {
     this.state = {
       boardlength: boardlength,
       dragging: false,
-      squares: [
-        "circle red", "", "circle green", "", "circle yellow",
-        "", "", "circle blue", "", "circle orange",
-        "", "", "", "", "",
-        "", "circle green", "", "circle yellow", "",
-        "", "circle red", "circle blue", "circle orange"
-      ],
-      
+      lines: {
+        "blue": [],
+        "green": [],
+        "red": [],
+        "orange": [],
+        "yellow": [],
+      },
+
+      starts: {
+        "blue": [7, 22],
+        "green": [2, 16],
+        "red": [0, 21],
+        "orange": [9, 23],
+        "yellow": [4, 19],
+      },
     }
   }
   
   onMouseEnter = (e, i) => {
+    const lines = { ...this.state.lines };
     if (!this.state.dragging)
       return
-    if (this.state.squares[i])
-      return;
-    const squareslice = this.state.squares.slice(0);
-    squareslice[i] = "rectangle " + this.state.dragging;
-    this.setState({ squares: squareslice});
+
+    const dragColor = this.state.dragging;
+
+    for (var color in lines) {
+      // can't go over foreign starts
+      if(dragColor !== color && this.state.starts[color].includes(i)) {
+        return;
+      }
+      // cut off overlapping lines
+      if(lines[color].includes(i)) {
+        const index = lines[color].indexOf(i);
+        lines[color] = lines[color].slice(0, index)
+      }
+    }
+
+    lines[dragColor].push(i);
+    this.setState({ lines });
   }
   
   onMouseDown = (e, i) => {
-    const squaresplit = this.state.squares[i].split(" ");
-    if (squaresplit.length < 2) {
-      return;
+    const lines = { ...this.state.lines };
+    var dragColor;
+
+    for (var color in lines) {
+      // if grabbing from startpoint, start clean
+      if(this.state.starts[color].includes(i)) {
+        lines[color] = [];
+        dragColor = color;
+      }
+      // if line is grabbed in the middle, remove next
+      if(lines[color].includes(i)) {
+        const index = lines[color].indexOf(i);
+        lines[color] = lines[color].slice(0, index);
+        dragColor = color;
+      }
     }
-    const color = squaresplit[1];
-    this.setState({ dragging: color });
+
+    lines[dragColor].push(i);
+
+    this.setState({
+      dragging: dragColor,
+      lines
+    });
   }
   
   onMouseUp = (e, i) => {
     this.setState({ dragging: false });
   }
-  
                    
   renderSquare(i) {
-    const squareClass = "" + this.state.squares[i];
+    var squareClass;
+
+    for (var color in this.state.lines) {
+      if(this.state.starts[color].includes(i)) {
+        squareClass = "circle " + color;
+        break;
+      }
+      if(this.state.lines[color].includes(i)) {
+        squareClass = "rectangle " + color;
+        break;
+      }
+    }
 
     return (
       <td 
