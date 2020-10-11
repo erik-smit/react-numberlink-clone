@@ -31,9 +31,22 @@ class Board extends React.Component {
   onMouseEnter = (e, i) => {
     const lines = { ...this.state.lines };
     if (!this.state.dragging)
-      return
+      return;
 
     const dragColor = this.state.dragging;
+    
+    // test if adjacent to existing
+    const adjacentTiles = [ i-5, i+5 ];
+    // left-most-tile doesn't have -1 adjacent
+    if ((i % this.state.boardlength) !== 0)
+      adjacentTiles.push(i-1);
+    // right-most-tile doesn't have +1 adjacent
+    if ((i % this.state.boardlength) !== this.state.boardlength-1)
+      adjacentTiles.push(i+1);
+
+    if(!adjacentTiles.some(element => lines[dragColor].includes(element))) {
+      return;
+    }
 
     for (var color in lines) {
       // can't go over foreign starts
@@ -61,7 +74,7 @@ class Board extends React.Component {
         lines[color] = [];
         dragColor = color;
       }
-      // if line is grabbed in the middle, remove next
+      // if line is grabbed in the middle, remove following
       if(lines[color].includes(i)) {
         const index = lines[color].indexOf(i);
         lines[color] = lines[color].slice(0, index);
@@ -139,7 +152,6 @@ class Board extends React.Component {
           className="game-board"
           draggable="true"
           onDragStart={e => {
-            //console.log(e.target.is('td.square'));
             if (e.target.localName === "td") {
               return;
             }
