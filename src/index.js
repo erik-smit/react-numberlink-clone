@@ -48,6 +48,10 @@ class Board extends React.Component {
       return;
     }
 
+    // don't continue growing after both starts
+    if (this.state.starts[dragColor].every(start => lines[dragColor].includes(start)))
+      return;
+
     for (var color in lines) {
       // can't go over foreign starts
       if(dragColor !== color && this.state.starts[color].includes(i)) {
