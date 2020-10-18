@@ -143,7 +143,7 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = '';
+    const status = this.testFinished() ? "finished" : "not finished";
 
     const boardRows = [...Array(this.state.boardlength)].map((x, i) => {
       return this.renderRow(i)
@@ -151,10 +151,10 @@ class Board extends React.Component {
 
     return (
       <div>
-        <div className="status">{status}</div>
         <table 
           className="game-board"
           draggable="true"
+          // prevent text selections
           onDragStart={e => {
             if (e.target.localName === "td") {
               return;
@@ -167,8 +167,18 @@ class Board extends React.Component {
             {boardRows}
           </tbody>
         </table>
+        <div className="status">{status}</div>
       </div>
     );
+  }
+
+  testFinished() {
+    for (var color in this.state.lines) {
+      if (!this.state.starts[color].every(v => this.state.lines[color].includes(v))) {
+        return false;
+     }
+    }
+    return true;
   }
 }
 
