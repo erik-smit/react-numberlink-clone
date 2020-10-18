@@ -23,7 +23,7 @@ class Board extends React.Component {
         "green": [2, 16],
         "red": [0, 21],
         "orange": [9, 23],
-        "yellow": [4, 19],
+        "yellow": [4, 18],
       },
     }
   }
