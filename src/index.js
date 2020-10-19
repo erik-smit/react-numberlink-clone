@@ -7,24 +7,15 @@ class Board extends React.Component {
     super(props);
     const boardlength = 5;
 
+    const lines = {};
+    Object.keys(this.props.level.starts).forEach((color) => {
+      lines[color] = [];
+    })
+
     this.state = {
       boardlength: boardlength,
       dragging: false,
-      lines: {
-        "blue": [],
-        "green": [],
-        "red": [],
-        "orange": [],
-        "yellow": [],
-      },
-
-      starts: {
-        "blue": [7, 22],
-        "green": [2, 16],
-        "red": [0, 21],
-        "orange": [9, 23],
-        "yellow": [4, 18],
-      },
+      lines: lines,
     }
   }
   
@@ -49,12 +40,12 @@ class Board extends React.Component {
     }
 
     // don't continue growing after both starts
-    if (this.state.starts[dragColor].every(start => lines[dragColor].includes(start)))
+    if (this.props.level.starts[dragColor].every(start => lines[dragColor].includes(start)))
       return;
 
     for (var color in lines) {
       // can't go over foreign starts
-      if(dragColor !== color && this.state.starts[color].includes(i)) {
+      if(dragColor !== color && this.props.level.starts[color].includes(i)) {
         return;
       }
       // cut off overlapping lines
@@ -74,7 +65,7 @@ class Board extends React.Component {
 
     for (var color in lines) {
       // if grabbing from startpoint, start clean
-      if(this.state.starts[color].includes(i)) {
+      if(this.props.level.starts[color].includes(i)) {
         lines[color] = [];
         dragColor = color;
       }
@@ -101,12 +92,13 @@ class Board extends React.Component {
   renderSquare(i) {
     var squareClass;
 
-    for (var color in this.state.lines) {
-      if(this.state.starts[color].includes(i)) {
+    for (var color in this.props.level.starts) {
+      if(this.props.level.starts[color].includes(i)) {
         squareClass = "circle " + color;
         break;
       }
-      if(this.state.lines[color].includes(i)) {
+      if(color in this.state.lines &&
+         this.state.lines[color].includes(i)) {
         squareClass = "rectangle " + color;
         break;
       }
@@ -173,8 +165,9 @@ class Board extends React.Component {
   }
 
   testFinished() {
-    for (var color in this.state.lines) {
-      if (!this.state.starts[color].every(v => this.state.lines[color].includes(v))) {
+    for (var color in this.props.level.starts) {
+      if (!(color in this.state.lines) ||
+          !this.props.level.starts[color].every(v => this.state.lines[color].includes(v))) {
         return false;
      }
     }
@@ -183,15 +176,54 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      level: 0
+    }
+  }
+
+  handleClickLevel(i) {
+    this.setState({level: i});
+  }
+
   render() {
+    const levels = [
+      // 0
+      {
+         starts: {
+          "blue": [7, 22],
+          "green": [2, 16],
+          "red": [0, 21],
+          "orange": [9, 23],
+          "yellow": [4, 18],
+        }
+      },
+      // 1
+      {
+         starts: {
+          "blue": [15, 24],
+          "green": [12, 16],
+          "red": [20, 17],
+          "yellow": [0, 19],
+        }
+      },
+    ];
+
+    const levelItems = levels.map(
+      (level, i) =>
+        <li><button onClick={() => this.handleClickLevel(i)}>{i}</button></li>
+    )
+
     return (
       <div className="game">
-        <div className="game-board">
-          <Board />
-        </div>
-        <div className="game-info">
-          <div>{/* status */}</div>
-          <ol>{/* TODO */}</ol>
+        <Board
+          key={this.state.level}
+          level={levels[this.state.level]}
+          />
+        <div className="game-levels">
+          <div>{this.state.level}</div>
+          <ul>{levelItems}</ul>
         </div>
       </div>
     );
