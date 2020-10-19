@@ -35,7 +35,8 @@ class Board extends React.Component {
     if ((i % this.state.boardlength) !== this.state.boardlength-1)
       adjacentTiles.push(i+1);
 
-    if(!adjacentTiles.some(element => lines[dragColor].includes(element))) {
+    // only grow to tiles adjacent to head
+    if(!adjacentTiles.some(element => lines[dragColor][lines[dragColor].length-1] === element)) {
       return;
     }
 
@@ -222,7 +223,6 @@ class Game extends React.Component {
           level={levels[this.state.level]}
           />
         <div className="game-levels">
-          <div>{this.state.level}</div>
           <ul>{levelItems}</ul>
         </div>
       </div>
