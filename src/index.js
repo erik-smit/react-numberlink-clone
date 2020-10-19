@@ -212,7 +212,7 @@ class Game extends React.Component {
 
     const levelItems = levels.map(
       (level, i) =>
-        <li><button onClick={() => this.handleClickLevel(i)}>{i}</button></li>
+        <li key={i}><button onClick={() => this.handleClickLevel(i)}>{i}</button></li>
     )
 
     return (
