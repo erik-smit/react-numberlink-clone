@@ -165,7 +165,7 @@ class Board extends React.Component {
   }
 
   testFinished() {
-    for (var color in this.props.level.starts) {
+    for (let color in this.props.level.starts) {
       if (!(color in this.state.lines) ||
           !this.props.level.starts[color].every(v => this.state.lines[color].includes(v))) {
         return false;
