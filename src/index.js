@@ -78,6 +78,11 @@ class Board extends React.Component {
       }
     }
 
+    if (!dragColor) {
+      // no start color found
+      return;
+    }
+
     lines[dragColor].push(i);
 
     this.setState({
