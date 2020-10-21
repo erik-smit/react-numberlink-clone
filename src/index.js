@@ -86,6 +86,20 @@ class Board extends React.Component {
     });
   }
   
+  onTouchMove = (e, i) => {
+    // onTouchMove keeps triggering on the first element touched
+    // so, find element under finger and trigger mouseover for this
+    // ugly but works
+    var myTouch = e.changedTouches[0];
+    var foo = document.elementFromPoint(myTouch.clientX, myTouch.clientY);
+
+    // no element under finger
+    if (!foo) {
+      return;
+    }
+    foo.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
+  }
+
   onMouseUp = (e, i) => {
     this.setState({ dragging: false });
   }
@@ -109,10 +123,11 @@ class Board extends React.Component {
       <td 
         key={i} 
         className="square"
-        onPointerDown={ (e) => this.onMouseDown(e,i) }
-        onPointerEnter={ (e) => this.onMouseEnter(e,i) }
-        onPointerUp={ (e) => this.onMouseUp(e,i) }
+        onMouseDown={ (e) => this.onMouseDown(e,i) }
+        onMouseEnter={ (e) => this.onMouseEnter(e,i) }
+        onMouseUp={ (e) => this.onMouseUp(e,i) }
         onTouchStart={ (e) => this.onMouseDown(e,i) }
+        onTouchMove={ (e) => this.onTouchMove(e,i) }
         onTouchEnd={ (e) => this.onMouseUp(e,i) }
         >
         <div className={squareClass}>&nbsp;{}</div>

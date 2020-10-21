@@ -16,6 +16,8 @@
   height: 75px;
   background: #fff;
   border: 1px solid #999;
+  /* prevent scrolling while touching*/
+  touch-action: none;
 }
 
 .rectangle {
